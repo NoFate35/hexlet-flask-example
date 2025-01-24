@@ -1,35 +1,24 @@
+import json
 from urllib.parse import urljoin
 
 import requests
 
-BASE_URL = 'http://localhost:8000'
+BASE_URL = 'http://localhost:8080'
 
 
-def test_companies():
-    expected = [
-        {'name': 'Wilson-Davis', 'phone': '001-701-915-3000'},
-        {'name': 'Ford, Davis and Reeves', 'phone': '3872318719'},
-        {'name': 'Holloway-Brown', 'phone': '475-943-3780x8105'},
-        {'name': 'Bennett, Brown and Matthews', 'phone': '(418)632-0518'},
-        {'name': 'Williams-Hill', 'phone': '8247242709'}
-    ]
-
-    response = requests.get(urljoin(BASE_URL, '/companies'))
-    assert response.json() == expected
+def test_companies1():
+    expected = {'id': 1, 'name': 'Cooper-Perez', 'phone': '848-357-4398'}
+    response = requests.get(urljoin(BASE_URL, '/companies/1'))
+    assert json.loads(response.text) == expected
 
 
-def test_companies_slice1():
-    expected = [
-        {'name': 'Holloway-Brown', 'phone': '475-943-3780x8105'}
-    ]
-    response = requests.get(urljoin(BASE_URL, '/companies?page=3&per=1'))
-    assert response.json() == expected
+def test_companies2():
+    expected = {'id': 98, 'name': 'Lara-Robinson', 'phone': '554-371-9416'}
+    response = requests.get(urljoin(BASE_URL, '/companies/98'))
+    assert json.loads(response.text) == expected
 
 
-def test_companies_slice2():
-    expected = [
-        {'name': 'Figueroa, Boyd and Smith', 'phone': '759-632-0497x0626'},
-        {'name': 'Friedman Inc', 'phone': '001-469-858-9067'}
-    ]
-    response = requests.get(urljoin(BASE_URL, '/companies?page=20&per=2'))
-    assert response.json() == expected
+def test_companies_not_found():
+    response = requests.get(urljoin(BASE_URL, '/companies/12341234'))
+    assert response.text == 'Page not found'
+    assert response.status_code == 404
