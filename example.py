@@ -1,26 +1,27 @@
 from flask import Flask
-from flask import jsonify
+from flask import request
+from flask import make_response
 
-from faker import Faker
-
-fake = Faker()
-fake.seed_instance(1234)
-
-domains = [fake.domain_name() for i in range(10)]
-phones = [fake.phone_number() for i in range(10)]
 
 # Это callable WSGI-приложение
 app = Flask(__name__)
 
+@app.route('/hello')
+def hello():
+    # создаем объект response
+    response = make_response('Hello, World!')
+    # Устанавливаем заголовок
+    response.headers['X-MyHeader'] = 'Thats my header!'
+    # Меняем тип ответа
+    response.mimetype = 'text/plain'
+    # Задаем статус
+    response.status_code = 201
+    # Устанавливаем cookie
+    response.set_cookie('super-cookie', '42')
+    return response
 
-@app.route("/")
-def index():
-    return "go to the /phones or /domains" 
-
-@app.route('/phones')
-def get_phones():
-    return jsonify(phones)
-
-@app.route("/domains")
-def get_domains():
-    return jsonify(domains)
+@app.post('/users')
+def get_users():
+     response = make_response('hhhhhhhhh')
+     response.headers['X-MyHeader'] = 'yooooo'
+     return response
