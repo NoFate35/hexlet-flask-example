@@ -1,15 +1,15 @@
-from flask import Flask, jsonify
+from flask import Flask, render_template
 
-from data import generate_companies
+from data import generate_users
 
-companies = generate_companies(100)
+users = generate_users(100)
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    return 'open something like (you can change id): /companies/5'
+    return render_template('index.html')
 
 
 # BEGIN (write your solution here)
