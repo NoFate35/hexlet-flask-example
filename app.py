@@ -15,7 +15,7 @@ def index():
 # BEGIN (write your solution here)
 @app.route('/users')
 def get_users():
-    '''
+    
     template_users = users
     query = request.args.get('term', None)
     if query:
@@ -40,5 +40,5 @@ def get_users():
     return render_template('users/index.html',
                            template_users=filter_users,
                            search=query)
-                         
+     '''                    
 # END
