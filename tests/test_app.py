@@ -5,36 +5,31 @@ import requests
 BASE_URL = 'http://localhost:8000'
 
 
+def test_has_form():
+    response = requests.get(urljoin(BASE_URL, '/users'))
+    assert 'form' in response.text
+
+
 def test_users():
     response = requests.get(urljoin(BASE_URL, '/users'))
-    assert 'Stephanie' in response.text
-    assert 'Maria' in response.text
-    assert 'Shelly' in response.text
-    assert 'href="/users/4' in response.text
+    assert 'Warren' in response.text
+    assert 'Amanda' in response.text
 
 
-def test_user1():
-    response = requests.get(urljoin(BASE_URL, '/users/4'))
-    assert 'Andres' in response.text
-    assert 'Cox' in response.text
-    assert 'wyoung@gmail.com' in response.text
+def test_starts_with_term():
+    response = requests.get(urljoin(BASE_URL, '/users?term=al'))
+    assert 'Alyssa' in response.text
+    assert 'Alexa' in response.text
+    assert 'Allison' in response.text
+    assert 'Sarah' not in response.text
 
 
-def test_user2():
-    response = requests.get(urljoin(BASE_URL, '/users/51'))
-    assert 'Brian' in response.text
-    assert 'Rich' in response.text
-    assert 'fhall@gmail.com' in response.text
+def test_with_term_in_middle():
+    response = requests.get(urljoin(BASE_URL, '/users?term=al'))
+    assert 'Gerald' not in response.text
+    assert 'Randall' not in response.text
 
 
-def test_user3():
-    response = requests.get(urljoin(BASE_URL, '/users/82'))
-    assert 'Matthew' in response.text
-    assert 'Petty' in response.text
-    assert 'respinoza@gmail.com' in response.text
-
-
-def test_user_not_found():
-    response = requests.get(urljoin(BASE_URL, '/users/100'))
-    assert response.text == 'Page not found'
-    assert response.status_code == 404
+def test_not_found_term():
+    response = requests.get(urljoin(BASE_URL, '/users?term=aaaaa'))
+    assert 'aaaaa' in response.text

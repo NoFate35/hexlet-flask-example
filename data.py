@@ -24,3 +24,4 @@ def generate_users(users_count):
         })
 
     return users
+
