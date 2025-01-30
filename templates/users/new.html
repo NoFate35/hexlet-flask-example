@@ -1,0 +1,38 @@
+<!-- templates/users/new.html -->
+<form action="/users" method="post">
+  <div>
+    <label>
+      Имя
+      <input type="text" name="name">
+    </label>
+  </div>
+  <div>
+    <label>
+      Email
+      <input type="email" required name="email">
+    </label>
+    </div>
+  <div>
+    <label>
+      Пароль
+      <input type="password" required name="password">
+    </label>
+    </div>
+  <div>
+    <label>
+      Подтверждение пароля
+      <input type="password" required name="passwordConfirmation">
+    </label>
+  </div>
+  <div>
+    <label>
+      Город
+      <select name="city">
+        <option value="3">Москва</option>
+        <option value="13">Пенза</option>
+        <option  value="399">Томск</option>
+      </select>
+    </label>
+  </div>
+  <input type="submit" value="Sign Up">
+</form>
