@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 from data import generate_users
 
@@ -12,34 +12,29 @@ def index():
     return render_template('index.html')
 
 
-# BEGIN (write your solution here)
-@app.route('/users')
-def get_users():
+@app.post('/users')
+def users_post():
+    user = request.form.to_dict()
+    #errors = validate(user)
+    errors = {1}
+    if errors:
+        return render_template(
+          'users/new.html',
+          user=user,
+          errors=errors
+        )
+    #with open("data.json", "w") as f:
+        #json.dump(user, f)
+    #return redirect('/users', code=302)
     
-    template_users = users
-    query = request.args.get('term', None)
-    if query:
-        template_users = filter(lambda user: user['first_name'].lower().startswith(query.lower()), users)
-    return render_template('users/index.html',
-                               users=list(template_users),
-                               search=query)
-    '''
-    query = request.args.get('term', None)
-    print('term', query, 'request.args', request.args)
-    if query is None:
-        print('truuuuuu')
-        return render_template('users/index.html',
-                               template_users=users)
-    len_query = len(query)
-    filter_users = []
-    for user in users:
-        if user['first_name'][:len_query].lower() == query.lower():
-            filter_users.append(user)        
-        
-    print('query', query, 'filter_users', list(filter_users), '\n')
-    return render_template('users/index.html',
-                           template_users=filter_users,
-                           search=query)
-     '''                    
-# END
+@app.get('/users')
+def users_get():
+    user = {'name': '',
+            'email': '',
+            'password': '',
+            'passwordConfirmation': '',
+            'city': ''}
+    errors = {}
+    return render_template('users/new.html',
+    user=user, errors=errors)
 
