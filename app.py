@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect
 
 from data import generate_users
+import json
+import uuid
 
 users = generate_users(100)
 
@@ -14,27 +16,41 @@ def index():
 
 @app.post('/users')
 def users_post():
-    user = request.form.to_dict()
-    #errors = validate(user)
-    errors = {1}
+    user_data = request.form.to_dict()
+    print('user', user_data)
+    errors = validate(user_data)
+    print('errors', errors)
     if errors:
-        return render_template(
-          'users/new.html',
-          user=user,
-          errors=errors
-        )
-    #with open("data.json", "w") as f:
-        #json.dump(user, f)
-    #return redirect('/users', code=302)
+        return render_template('users/new.html',
+                               user=user,
+                               errors=errors
+                               )
+    id = str(uuid.uuid4())
+    print('uuid', id)
+    user = {
+        'id': id,
+        'nickname':user_data['nickname'],
+        'email': user_data['email']
+    }
+    with open("data.json", "a") as f:
+        json.dump(user, f)
+    return redirect('/users', code=302)
     
 @app.get('/users')
 def users_get():
-    user = {'name': '',
+    user = {'nickname': '',
             'email': '',
-            'password': '',
-            'passwordConfirmation': '',
-            'city': ''}
+            }
     errors = {}
     return render_template('users/new.html',
     user=user, errors=errors)
+
+
+def validate(user):
+    errors = {}
+    if not user['nickname']:
+        errors['name'] = "Can't be blank"
+    if not user['email']:
+        errors['email'] = "Can't be blank"
+    return errors
 
