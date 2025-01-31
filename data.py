@@ -5,23 +5,23 @@ from faker import Faker
 SEED = 1234
 
 
-def generate_users(users_count):
-    fake = Faker()
-    fake.seed_instance(SEED)
+import sys
+import uuid
+from flask import session
 
-    ids = list(range(1, users_count))
-    random.seed(SEED)
-    random.shuffle(ids)
 
-    users = []
+class Repository:
+    def content(self):
+        return session.values()
 
-    for i in range(users_count - 1):
-        users.append({
-            'id': ids[i],
-            'first_name': fake.first_name(),
-            'last_name': fake.last_name(),
-            'email': fake.free_email(),
-        })
+    def find(self, id):
+        try:
+            return session[id]
+        except KeyError:
+            sys.stderr.write(f'Wrong item id: {id}')
+            raise
 
-    return users
+    def save(self, item):
+        item['id'] = str(uuid.uuid4())
+        session[item['id']] = item
 

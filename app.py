@@ -1,12 +1,17 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, redirect, render_template, request
+# BEGIN (write your solution here)
 
-from data import generate_users
-import json
-import uuid
+# END
+import os
 
-users = generate_users(100)
+from data import Repository
+
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
+
+repo = Repository()
 
 
 @app.route('/')
@@ -14,43 +19,15 @@ def index():
     return render_template('index.html')
 
 
-@app.post('/users')
-def users_post():
-    user_data = request.form.to_dict()
-    print('user', user_data)
-    errors = validate(user_data)
-    print('errors', errors)
-    if errors:
-        return render_template('users/new.html',
-                               user=user,
-                               errors=errors
-                               )
-    id = str(uuid.uuid4())
-    print('uuid', id)
-    user = {
-        'id': id,
-        'nickname':user_data['nickname'],
-        'email': user_data['email']
-    }
-    with open("data.json", "a") as f:
-        json.dump(user, f)
-    return redirect('/users', code=302)
-    
-@app.get('/users')
-def users_get():
-    user = {'nickname': '',
-            'email': '',
-            }
-    errors = {}
-    return render_template('users/new.html',
-    user=user, errors=errors)
+@app.get('/courses')
+def courses_get():
+    courses = repo.content()
+    return render_template(
+        'courses/index.html',
+        courses=courses,
+        )
 
 
-def validate(user):
-    errors = {}
-    if not user['nickname']:
-        errors['name'] = "Can't be blank"
-    if not user['email']:
-        errors['email'] = "Can't be blank"
-    return errors
+# BEGIN (write your solution here)
 
+# END

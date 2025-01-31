@@ -1,26 +1,7 @@
-<!doctype html>
-<html>
+{% extends 'users/layout.html' %}
 
-<head>
-  <title>Example application</title>
-</head>
+{% block title %}Пользователи{% endblock %}
 
-<body>
-  <a href="/users">Пользователи</a>
-  <!-- BEGIN (write your solution here) -->
-     <table>
-     {% for user in users %}
-     <tr>
-       <td>
-           {{ user['id']}}
-       </td>
-       <td>
-           <a href="/users/{{user['id']}}">{{user['first_name']}}</a>
-       </td>
-     </tr>
-     {% endfor %}
- </table>
-  <!-- END -->
-</body>
+{% block content %}
 
-</html>
+{% endblock %}

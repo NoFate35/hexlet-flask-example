@@ -5,13 +5,17 @@
   <form action="/users" method="post">
     <div>
       <label name="nickname">Nickname:
-        <input type="text" name="nickname" required value="{{user['nickname']}}"/>
+        <input type="text" name="nickname" value="{{user['nickname']}}"/>
       </label>
   </div>
-
+  {% if errors['name'] %}
+    <div>
+      {{errors['name']}}
+    </div>
+  {% endif %}
   <div>
     <label name="email">Email
-      <input type="email" required name="email" value="{{user['email']}}"/>
+      <input type="email" name="email" value="{{user['email']}}"/>
     </label>
   </div>
   <input type="submit" value="Sign Up">
