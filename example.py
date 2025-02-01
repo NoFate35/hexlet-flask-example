@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect
 
-from data import generate_users
+
 import json
 import uuid
 
-users = generate_users(100)
+
 
 app = Flask(__name__)
 
