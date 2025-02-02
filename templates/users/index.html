@@ -3,10 +3,17 @@
 {% block title %}Пользователи{% endblock %}
 
 {% block content %}
-  <form action="/users" method="get">
+  <form action="{{ url_for('users_post') }}" method="get">
     <input type="search" name="query" value="{{ query }}">
     <input type="submit" value="Search">
   </form>
+  {% if messages %}
+  <ul class=flashes>
+  {% for category, message in messages %}
+    <li class="{{ category }}">{{ message }}</li>
+  {% endfor %}
+  </ul>
+{% endif %}
   {% for user in users %}
   <li>
     {{user['nickname']}}

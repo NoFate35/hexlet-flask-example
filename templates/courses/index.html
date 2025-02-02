@@ -1,14 +1,7 @@
-<!doctype html>
-<html>
-  <head>
-    <title>Example application</title>
-  </head>
-  <body>
-    <a href="/courses/new">New course</a>
-    <ul>
-    {% for course in courses %}
-    <li>Title: {{ course['title'] }}</li>
-      {% endfor %}
-    </ul>
-  </body>
-</html>
+<form action="/courses" method="post">
+  <input type="submit" value="Create Course">
+</form>
+
+<!-- BEGIN (write your solution here) -->
+
+<!-- END -->

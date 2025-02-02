@@ -2,7 +2,7 @@
 
 {% block title %}Пользователи{% endblock %}
 {% block content %}
-  <form action="/users" method="post">
+  <form action="{{ url_for('search_users') }}" method="post">
     <div>
       <label name="nickname">Nickname:
         <input type="text" name="nickname" value="{{user['nickname']}}"/>

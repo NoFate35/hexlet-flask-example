@@ -6,9 +6,9 @@
 <div id="sidebar">
     {% block sidebar %}
         <ul>
-            <li><a href="/">Главная</a></li>
-            <li><a href="/users">Пользователи</a></li>
-            <li><a href="/users/new">Зарегистрироваться</a></li>
+            <li><a href="{{ url_for('index') }}">Главная</a></li>
+            <li><a href="{{ url_for('search_users') }}">Пользователи</a></li>
+            <li><a href="{{ url_for('users_get') }}">Зарегистрироваться</a></li>
         </ul>
     {% endblock %}
 </div>
