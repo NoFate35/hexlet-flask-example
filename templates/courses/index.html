@@ -3,5 +3,9 @@
 </form>
 
 <!-- BEGIN (write your solution here) -->
-
+{% if messages %}
+    {% for category, message in messages %}
+    <p>{{message}}</p>
+    {% endfor %}
+{% endif %}
 <!-- END -->
