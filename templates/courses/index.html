@@ -5,7 +5,13 @@
   </head>
   <body>
 <!-- BEGIN (write your solution here) -->
-  
+    {% for post in posts %}
+    <ul>  
+      <li>
+        <a href="{{ url_for('posts_show', slug=post.slug) }}">{{ post.title }}</a>
+      </li>
+  </ul>
+    {% endfor %}
 <!-- END -->
   </body>
 </html>

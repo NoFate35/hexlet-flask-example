@@ -12,6 +12,18 @@ def index():
 
 
 # BEGIN (write your solution here)
+@app.route('/posts')
+def posts_index():
+    posts = repo.content()
+    #print('posssts', posts)
+    return render_template('courses/index.html',
+                           posts=posts)
 
+@app.get('/posts/<slug>')
+def posts_show(slug):
+    post = repo.find(slug)
+    if not post:
+        return 'Page not found', 404
+    return render_template('courses/show.html', post=post)
 # END
 
