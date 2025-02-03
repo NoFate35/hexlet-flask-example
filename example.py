@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, get_flashed_messages
+from flask import Flask, render_template, request, redirect, flash, get_flashed_messages, url_for
 
 
 import json
@@ -17,8 +17,8 @@ def index():
     return render_template('index.html')
 
 
-@app.get('/users')
-def search_users():
+@app.get('/users/')
+def users_index():
     with open('data.json', 'r') as f:
         users = json.load(f)
 
@@ -34,14 +34,16 @@ def search_users():
                             messages=messages)
 
 @app.route('/users/<id>')
-def show_user(id):
+def users_show(id):
     with open('data.json', 'r') as f:
         users = json.load(f)
-    user = next(user for user in users if user['id'] == id)
+    user = list(user for user in users if user['id'] == id)
+    if not user:
+        return 'Page not found', 404
     return render_template('users/show.html',
     user=user)
 
-@app.post('/users')
+@app.post('/users/')
 def users_post():
     user_data = request.form.to_dict()
     errors = validate(user_data)
@@ -60,10 +62,10 @@ def users_post():
     with open("data.json", "w") as f:
         json.dump(users, f)
     flash('User was added successfully', 'success')
-    return redirect('/users', code=302)
+    return redirect(url_for('users_index'), code=302)
     
 @app.get('/users/new')
-def users_get():
+def users_new():
     user = {'nickname': '',
             'email': '',
             }

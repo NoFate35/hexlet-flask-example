@@ -15,8 +15,15 @@
   </ul>
 {% endif %}
   {% for user in users %}
-  <li>
-    {{user['nickname']}}
-  </li>
+  <p>
+  <tr>
+    <td>
+        {{ user.id }}
+    </td>
+    <td>
+        <a href="{{ url_for('users_show', id=user.id) }}">{{ user.nickname }}</a>
+    </td>
+  </tr>
+</p>
   {% endfor %}
 {% endblock %}

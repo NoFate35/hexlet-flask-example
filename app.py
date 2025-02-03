@@ -1,28 +1,17 @@
-from flask import (
-    Flask,
-    flash,
-    get_flashed_messages,
-    render_template,
-    redirect,
-    url_for
-)
-import os
+from flask import Flask, render_template, request
+from repository import PostsRepository
 
 app = Flask(__name__)
 
-app.secret_key = "secret_key"
+repo = PostsRepository(50)
 
-#app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 # BEGIN (write your solution here)
-@app.get('/')
-def get_courses():
-    messages = get_flashed_messages(with_categories = True)
-    return render_template('courses/index.html', messages=messages)
 
-@app.post('/courses/')
-def redirect_courses():
-    flash('Course Added ', 'success')
-    return redirect(url_for('get_courses'))
 # END
+
