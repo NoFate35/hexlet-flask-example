@@ -4,15 +4,22 @@
     <title>Example application</title>
   </head>
   <body>
-<!-- BEGIN (write your solution here) -->
-    {% for post in posts %}
-    <ul>  
-      <li>
-        <a href="{{ url_for('posts_show', slug=post.slug) }}">{{ post.title }}</a>
-      </li>
-  </ul>
+    <a href="/posts/new">Create post</a>
+
+    {% if messages %}
+    <ul>
+      {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
     {% endfor %}
-    <a href="?page={{ 1 if page < 2 else page - 1 }}">Назад</a> <a href="?page={{ page + 1 }}">Вперед</a>
-<!-- END -->
-  </body>
+    </ul>
+    {% endif %}
+
+    <ul>    
+    {% for post in posts %}
+      <li>
+        {{ post.title }}
+      </li>
+    {% endfor %}
+    </ul>
+</body>
 </html>

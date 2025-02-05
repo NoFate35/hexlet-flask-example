@@ -1,10 +1,7 @@
-# BEGIN (write your solution here)
-def validate(course):
+def validate(post):
     errors = {}
-    if not course['title']:
+    if not post.get('title'):
         errors['title'] = "Can't be blank"
-    if not course['paid']:
-        errors['paid'] = "Can't be blank"
+    if not post.get('body'):
+        errors['body'] = "Can't be blank"
     return errors
-
-# END

@@ -4,30 +4,15 @@
     <title>Example application</title>
   </head>
   <body>
-<form action="{{ url_for('courses') }}" method="post">
-    <div>
-        <label>
-          Title *
-        <input type="text" name="title" value="{{ course.title }}">
-        </label>
-        {% if errors['title'] %}
-        <div>{{ errors['title'] }}</div>
-        {% endif %}
-    </div>
-    <div>
-      <label>
-        Paid *
-        <select name="paid">
-          <option value="">Select</option>
-          <option {{ 'selected' if course.paid =='1' else '' }} value="1">Paid</option>
-          <option {{ 'selected' if course.paid =='0' else '' }} value="0">Free</option>
-        </select>
-        </label>
-        {% if errors['paid'] %}
-        <div>{{ errors['paid'] }}</div>
-        {% endif %}
-    </div>
-    <input type="submit" value="Create">
-  </form>
+  <a href="{{ url_for('posts_get') }}">Посты</a>
+  <!-- BEGIN (write your solution here) -->
+  
+  <!-- END -->
   </body>
 </html>
+
+
+
+
+
+
