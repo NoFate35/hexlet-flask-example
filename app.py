@@ -15,9 +15,13 @@ def index():
 @app.route('/posts')
 def posts_index():
     posts = repo.content()
-    #print('posssts', posts)
-    return render_template('courses/index.html',
-                           posts=posts)
+    page = request.args.get('page', 1, type=int)
+    per = request.args.get('per', 5, type=int)
+    prev_page = (page - 1) * per
+    current_page = page*per
+    posts_at_page = posts[prev_page:current_page]
+    print('page', page)
+    return render_template('courses/index.html', posts=posts_at_page, page=page)
 
 @app.get('/posts/<slug>')
 def posts_show(slug):

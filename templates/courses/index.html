@@ -12,6 +12,7 @@
       </li>
   </ul>
     {% endfor %}
+    <a href="?page={{ 1 if page < 2 else page - 1 }}">Назад</a> <a href="?page={{ page + 1 }}">Вперед</a>
 <!-- END -->
   </body>
 </html>
