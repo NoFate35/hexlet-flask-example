@@ -37,5 +37,22 @@ def posts_get():
 
 
 # BEGIN (write your solution here)
+@app.get('/posts/new')
+def posts_new():
+    post = {'title': '', 'body': ''}
+    errors = {}
+    return render_template('courses/new.html')
 
+
+@app.post('/posts')
+def posts_index():
+    repo = PostsRepository()
+    post = request.form.to_dict()
+    #print("post to dict", post)
+    errors = validate(post)
+    if errors:
+        return render_template('courses/new.html', errors=errors, post=post), 422
+    repo.save(post)
+    flash('Post has been created', 'success')
+    return redirect(url_for('posts_get'))
 # END

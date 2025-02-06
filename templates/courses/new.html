@@ -6,7 +6,25 @@
   <body>
   <a href="{{ url_for('posts_get') }}">Посты</a>
   <!-- BEGIN (write your solution here) -->
-  
+  <form action="{{ url_for('posts_index') }}" method="post">
+    <div>
+        <label>
+            Заголовок
+            <input type="text" name="title" value="{{ post.title | default("")}}">
+        </label>
+        {% if errors %}
+            <div>{{ errors.title }}</div>
+        {% endif %}
+        <label>
+            Текст
+            <input type="text" name="body" value="{{ post.body | default("")}}">
+        </label>
+        {% if errors %}
+            <div>{{ errors.body }}</div>
+        {% endif %}
+    </div>
+    <input type="submit" value="Create">
+</form>
   <!-- END -->
   </body>
 </html>
