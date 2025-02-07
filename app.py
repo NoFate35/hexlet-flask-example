@@ -4,6 +4,7 @@ from flask import (
     Flask,
     flash,
     get_flashed_messages,
+    make_response,
     redirect,
     render_template,
     request,
@@ -36,23 +37,35 @@ def posts_get():
         )
 
 
-# BEGIN (write your solution here)
-@app.get('/posts/new')
-def posts_new():
-    post = {'title': '', 'body': ''}
+@app.route('/posts/new')
+def new_post():
+    post = {}
     errors = {}
-    return render_template('courses/new.html')
+    return render_template(
+        'courses/new.html',
+        post=post,
+        errors=errors,
+    )
 
 
 @app.post('/posts')
-def posts_index():
+def posts_post():
     repo = PostsRepository()
-    post = request.form.to_dict()
-    #print("post to dict", post)
-    errors = validate(post)
+    data = request.form.to_dict()
+    errors = validate(data)
     if errors:
-        return render_template('courses/new.html', errors=errors, post=post), 422
-    repo.save(post)
+        return render_template(
+            'courses/new.html',
+            post=data,
+            errors=errors,
+            ), 422
+    id = repo.save(data)
     flash('Post has been created', 'success')
-    return redirect(url_for('posts_get'))
+    resp = make_response(redirect(url_for('posts_get')))
+    resp.headers['X-ID'] = id
+    return resp
+
+
+# BEGIN (write your solution here)
+
 # END
