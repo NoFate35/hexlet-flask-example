@@ -15,7 +15,7 @@ from validator import validate
 import secrets
 
 
-app = Flask(__name__)
+app = Flask(__name__) 
 #app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 secret = secrets.token_urlsafe(32)
 app.secret_key = secret

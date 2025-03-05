@@ -16,7 +16,14 @@
 
     <ul>
     <!-- BEGIN (write your solution here) -->
-    
+     
+    {% for post in posts %}
+    <p>
+      {{ post.title }}
+      {{ post.body }}
+    </p>
+    {% endfor %}
+  
     <!-- END -->
     </ul>
 </body>
