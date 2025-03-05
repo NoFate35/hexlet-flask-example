@@ -38,10 +38,11 @@ def users_show(id):
     with open('data.json', 'r') as f:
         users = json.load(f)
     user = list(user for user in users if user['id'] == id)
+    print('ttttt', user)
     if not user:
         return 'Page not found', 404
     return render_template('users/show.html',
-    user=user)
+    user=user[0])
 
 @app.post('/users/')
 def users_post():
@@ -73,6 +74,27 @@ def users_new():
     return render_template('users/new.html',
     user=user, errors=errors)
 
+@app.get('/users/id>/edit')
+def users_edit(id):
+    with open("data.json", "r") as f:
+        users = json.load(f)
+    user = [user for user in users if user["id"] == id][0]
+    errors = {}
+    return render_temlate("users/edit.html", user=user, errors=errors)
+
+@app.route("/users/patch", methods=["POST"])
+def users_patch(id):
+    data = request.form.to_dict()
+    with open("data.json", "r") as f:
+        users = json.load(f)
+    user = [user for user in users if user["id"] == id][0]
+    errors = validate(data)
+    if errors:
+        return render_template("users/edit.html", user=data, errors=errors), 422
+    user["nickname"] = data["nickname"]
+    user["email"] = data["email"]
+    flash("User has been updated", 'success')
+    #return redirect ()
 
 def validate(user):
     errors = {}

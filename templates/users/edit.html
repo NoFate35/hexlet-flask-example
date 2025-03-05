@@ -1,0 +1,20 @@
+<form action="{{ url_for('users_patch', id=user.id) }}" method="post">
+    <div>
+      <label>
+          Nickname
+          <input type="text" name="nickname" value="{{ user.nickname }}">
+      </label>
+      {% if errors %}
+          <div>{{ errors.nickname }}</div>
+      {% endif %}
+    </div>
+    <label>
+          Email
+          <input type="text" name="email" value="{{ user.email }}">
+      </label>
+      {% if errors %}
+          <div>{{ errors.email }}</div>
+      {% endif %}
+    </div>
+    <input type="submit" value="Update">
+</form>
