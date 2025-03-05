@@ -74,15 +74,16 @@ def users_new():
     return render_template('users/new.html',
     user=user, errors=errors)
 
-@app.get('/users/id>/edit')
+@app.route('/users/<id>/edit')
 def users_edit(id):
+    print(users_edit, id)
     with open("data.json", "r") as f:
         users = json.load(f)
     user = [user for user in users if user["id"] == id][0]
     errors = {}
-    return render_temlate("users/edit.html", user=user, errors=errors)
+    return render_template("users/edit.html", user=user, errors=errors)
 
-@app.route("/users/patch", methods=["POST"])
+@app.route("/users/<id>/patch", methods=["POST"])
 def users_patch(id):
     data = request.form.to_dict()
     with open("data.json", "r") as f:
@@ -90,16 +91,21 @@ def users_patch(id):
     user = [user for user in users if user["id"] == id][0]
     errors = validate(data)
     if errors:
+        data['id'] = user['id']
         return render_template("users/edit.html", user=data, errors=errors), 422
+    users.remove(user)
     user["nickname"] = data["nickname"]
     user["email"] = data["email"]
+    users.append(user)
+    with open("data.json", "w") as f:
+        json.dump(users, f)
     flash("User has been updated", 'success')
-    #return redirect ()
+    return redirect(url_for('users_index'))
 
 def validate(user):
     errors = {}
     if not user['nickname']:
-        errors['name'] = "Can't be blank"
+        errors['nickname'] = "Can't be blank"
     if not user['email']:
         errors['email'] = "Can't be blank"
     return errors
