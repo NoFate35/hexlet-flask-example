@@ -6,7 +6,13 @@
   <body>
     <a href="{{ url_for('posts_get') }}">Посты</a>
 <!-- BEGIN (write your solution here) -->
+    <form action="{{ url_for('posts_update', id=post.id) }}" method="post">
     
+     {% include "courses/form.html" %}
+  
+        
+        <input type="submit" value="Patch">
+    </form>
 <!-- END -->
   </body>
 </html>

@@ -67,5 +67,31 @@ def posts_post():
 
 
 # BEGIN (write your solution here)
-
+@app.route("/posts/<id>/update", methods = ['GET', 'POST'])
+def posts_update(id):
+    repo = PostsRepository()
+    posts = repo.content()
+    post = repo.find(id)
+    if request.method == 'GET':
+        return render_template(
+        'courses/edit.html',
+        post=post,
+        errors={}
+        )
+    if request.method == 'POST':
+        data = request.form.to_dict()
+        data["id"] = id
+        errors = validate(data)
+        if errors:
+                return render_template(
+                'courses/edit.html',
+                post=data,
+                errors=errors), 422
+        posts = repo.content()
+        post["title"] = data["title"]
+        post["body"] = data["body"]
+        repo.save(post)
+        print("yyyyyyy")
+        #flash('Post has been updated', 'success')
+    return redirect(url_for('posts_get'))
 # END

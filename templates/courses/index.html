@@ -19,8 +19,7 @@
      
     {% for post in posts %}
     <p>
-      {{ post.title }}
-      {{ post.body }}
+      {{ post.title }}<a href = "{{ url_for('posts_update', id=post.id) }}">Edit</a>
     </p>
     {% endfor %}
   
