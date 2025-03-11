@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 def index():
     cart = json.loads(request.cookies.get('cart', json.dumps({})))
-    return render_template('index.html', cart=cart)
+    return render_template('index_carts.html', cart=cart)
 
 
 # BEGIN (write your solution here)
