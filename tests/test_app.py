@@ -1,46 +1,54 @@
-from urllib.parse import urljoin
-
-import requests
-
-BASE_URL = 'http://localhost:8000'
+from app import app
 
 
-def test_create_post():
-    with requests.Session() as s:
-        data = {'title': 'first', 'body': 'first_body'}
-        response = s.post(urljoin(BASE_URL, '/posts'), data=data, allow_redirects=False)
-        assert response.status_code == 302
+def test_cart():
+    with app.test_client() as client:
+        response = client.get('/')
+        assert b'Cart is empty' in response.data
 
-        response = s.get(urljoin(BASE_URL, '/posts'))
-        assert data['title'] in response.text
+        response = client.post(
+            '/cart-items',
+            data={'item_id': '1', 'item_name': 'One'},
+            follow_redirects=True,
+        )
+        assert b'One: 1' in response.data
 
+        response = client.post(
+            '/cart-items',
+            data={'item_id': '1', 'item_name': 'One'},
+            follow_redirects=True,
+        )
+        assert b'One: 2' in response.data
 
-def test_update_post():
-    with requests.Session() as s:
-        data = {'title': 'first', 'body': 'first_body'}
-        response = s.post(urljoin(BASE_URL, '/posts'), data=data, allow_redirects=False)
-        id = response.headers['X-ID']
-        assert response.status_code == 302
+        response = client.post(
+            '/cart-items',
+            data={'item_id': '2', 'item_name': 'Two'},
+            follow_redirects=True,
+        )
+        assert b'One: 2' in response.data
+        assert b'Two: 1' in response.data
 
-        response = s.get(urljoin(BASE_URL, f'/posts/{id}/update'))
-        assert data['title'] in response.text
-        assert data['body'] in response.text
+        response = client.post(
+            '/cart-items',
+            data={'item_id': '2', 'item_name': 'Two'},
+            follow_redirects=True,
+        )
+        assert b'One: 2' in response.data
+        assert b'Two: 2' in response.data
 
-        post_data = {'title': 'post', 'body': 'post_body'}
-        response = s.post(urljoin(BASE_URL, f'/posts/{id}/update'), data=post_data, allow_redirects=False)
+        response = client.post(
+            '/cart-items',
+            data={'item_id': '2', 'item_name': 'Two'},
+            follow_redirects=True,
+        )
+        assert b'One: 2' in response.data
+        assert b'Two: 3' in response.data
 
-        response = s.get(urljoin(BASE_URL, '/posts'))
-        assert data['title'] not in response.text
-        assert post_data['title'] in response.text
-
-
-def test_update_with_errors():
-    with requests.Session() as s:
-        data = {'title': 'first', 'body': 'first_body'}
-        response = s.post(urljoin(BASE_URL, '/posts'), data=data, allow_redirects=False)
-        id = response.headers['X-ID']
-        assert response.status_code == 302
-
-        new_data = {'title': '', 'body': ''}
-        response = s.post(urljoin(BASE_URL, f'/posts/{id}/update'), data=new_data, allow_redirects=False)
-        assert response.status_code == 422
+        response = client.post(
+            '/cart-items/clean',
+            data={'item_id': '2', 'item_name': 'Two'},
+            follow_redirects=True,
+        )
+        assert b'Cart is empty' in response.data
+        assert b'One:' not in response.data
+        assert b'Two:' not in response.data
