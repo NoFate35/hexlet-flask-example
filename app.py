@@ -16,7 +16,8 @@ def index():
 def carts_cookies_add():
     app.logger.info('start carts_cookies_add')
     #app.logger.debug('request.form.to_dict: %s', request.form.to_dict())
-    item = request.form.to_dict()
+    id = request.form['item_id']
+    name = request.form['item_name']
     cart = json.loads(request.cookies.get('cart', json.dumps({})))
     result = cart.get(item['item_id'])
     app.logger.debug('cart: %s, item: %s', cart, item)
