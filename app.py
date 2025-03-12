@@ -35,12 +35,28 @@ def index():
     messages = get_flashed_messages(with_categories=True)
     current_user = session.get('user')
     return render_template(
-        'index.html',
+        'index_session.html',
         messages=messages,
         current_user=current_user,
         )
 
 
 # BEGIN (write your solution here)
+info = app.logger.info
+debug = app.logger.debug
+@app.route('/session/new', methods=['POST'])
+def session_new():
+    info('start session_new')
+    #debug('session %s', session.get('user'))
+    user = get_user(request.form, users)
+    if user is None:
+        return redirect(url_for('index'))
+    session['user'] = user
+    debug('session: %s', session.get['user'])
+    return redirect(url_for('index'))
 
+@app.route('/session/delete', methods=['POST', 'DELETE'])
+def session_delete():
+    info("start session_delete")
+    return redirect(url_for('index'))
 # END
