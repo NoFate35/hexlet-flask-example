@@ -8,9 +8,9 @@
         <input type="text" name="nickname" value="{{user['nickname']}}"/>
       </label>
   </div>
-  {% if errors['name'] %}
+  {% if errors['nickname'] %}
     <div>
-      {{errors['name']}}
+      {{errors['nickname']}}
     </div>
   {% endif %}
   <div>
@@ -18,6 +18,11 @@
       <input type="email" name="email" value="{{user['email']}}"/>
     </label>
   </div>
+  {% if errors['email'] %}
+    <div>
+      {{errors['email']}}
+    </div>
+  {% endif %}
   <input type="submit" value="Sign Up">
   </form>
 {% endblock %}

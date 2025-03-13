@@ -1,18 +1,19 @@
-from flask import Flask, render_template, request, redirect, flash, get_flashed_messages, url_for
+from flask import Flask, render_template, request, redirect, flash, get_flashed_messages, url_for, session
 
 
 import json
 import uuid
 
+import secrets
 
-
+secret = secrets.token_urlsafe(32)
 app = Flask(__name__)
-
+app.secret_key = secret
 app.logger.setLevel('DEBUG')
 
 users = json.load(open('data.json', 'r'))
 
-app.secret_key = "secret_key"
+app.secret_key = secret
 
 @app.route('/')
 def index():
@@ -23,8 +24,10 @@ def index():
 @app.get('/users/')
 def users_index():
     app.logger.info('start users_index')
-    with open('data.json', 'r') as f:
-        users = json.load(f)
+    users = session.get('users')
+    if users is None:
+        session['users'] = []
+        users = {'nickname': '', 'email': ''}
     query = request.args.get('query', '')
     if query:
         app.logger.info('query = True')
@@ -40,8 +43,10 @@ def users_index():
 @app.route('/users/<id>')
 def users_show(id):
     app.logger.info('start users_show - users/<id>')
-    with open('data.json', 'r') as f:
-        users = json.load(f)
+    users = session.get('users')
+    if users is None:
+        session['users'] = []
+        users = {'nickname': '', 'email': ''}
     user = list(user for user in users if user['id'] == id)
     if not user:
         app.logger.debug('user not found')
@@ -56,7 +61,7 @@ def users_post():
     user_data = request.form.to_dict()
     errors = validate(user_data)
     if errors:
-        app.logger.debug('errors have been found')
+        app.logger.debug('errors have been found, errors: %s', errors)
         return render_template('users/new.html',
                                user=user_data,
                                errors=errors
@@ -67,9 +72,10 @@ def users_post():
         'nickname':user_data['nickname'],
         'email': user_data['email']
     }
-    users.append(user)
-    with open("data.json", "w") as f:
-        json.dump(users, f)
+    res = session.get('users')
+    if res is None:
+        session['users'] = []
+    session['users'].append(user)
     flash('User was added successfully', 'success')
     app.logger.debug('user was added - success')
     return redirect(url_for('users_index'), code=302)
@@ -89,8 +95,10 @@ def users_new():
 def users_edit(id):
     app.logger.info('start edit user render template')
     app.logger.debug(users_edit, id)
-    with open("data.json", "r") as f:
-        users = json.load(f)
+    users = session.get('users')
+    if users is None:
+        session['users'] = []
+        users = {'nickname': '', 'email': ''}
     user = [user for user in users if user["id"] == id][0]
     errors = {}
     app.logger.debug('render template users/edit.html')
@@ -100,8 +108,10 @@ def users_edit(id):
 def users_patch(id):
     app.logger.info('start patching user')
     data = request.form.to_dict()
-    with open("data.json", "r") as f:
-        users = json.load(f)
+    users = session.get('users')
+    if users is None:
+        session['users'] = []
+        users = {'nickname': '', 'email': ''}
     user = [user for user in users if user["id"] == id][0]
     errors = validate(data)
     if errors:
@@ -122,12 +132,12 @@ def users_patch(id):
 @app.post('/users/<id>/delete')
 def users_delete(id):
     app.logger.info('start users delit')
-    with open("data.json", "r") as f:
-        users = json.load(f)
+    users = session.get('users')
+    if users is None:
+        session['users'] = []
+        users = {'nickname': '', 'email': ''}
     user = list(user for user in users if user['id'] == id)[0]
     users.remove(user)
-    with open("data.json", "w") as f:
-        json.dump(users, f)
     app.logger.debug('user: %s', user)
     flash('Пользователь удален', 'success')
     return redirect(url_for('users_index'), code=302)

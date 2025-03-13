@@ -56,7 +56,7 @@ def session_new():
     user = get_user(request.form, users)
     if user is None:
         info('user is None: %s', user)
-        flash('Wrong password or namerepo.destroy(id)')
+        flash('Wrong password or name')
         return redirect(url_for('index'))
     session['user'] = user
     debug('session: %s', session['user'])
