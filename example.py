@@ -1,19 +1,29 @@
 from flask import Flask, render_template, request, redirect, flash, get_flashed_messages, url_for, session
 
-
+import psycopg2
 import json
 import uuid
-
 import secrets
 
 secret = secrets.token_urlsafe(32)
 app = Flask(__name__)
 app.secret_key = secret
 app.logger.setLevel('DEBUG')
-
-users = json.load(open('data.json', 'r'))
-
 app.secret_key = secret
+"""
+try:
+    # пытаемся подключиться к базе данных
+    conn = psycopg2.connect(dbname='', user='u0_a441',  host='lockalhost')
+except:
+    # в случае сбоя подключения будет выведено сообщение в STDOUT
+    print('Can`t establish connection to database')
+"""
+try:
+    # пытаемся подключиться к базе данных
+    conn = psycopg2.connect('postgresql://u0_a441@localhost/flaskdb')
+except:
+    # в случае сбоя подключения будет выведено сообщение  в STDOUT
+    print('Can`t establish connection to database')
 
 @app.route('/')
 def index():

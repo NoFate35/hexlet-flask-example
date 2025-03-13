@@ -1,0 +1,11 @@
+2025-03-13 17:42:19.639 MSK [31931] LOG:  starting PostgreSQL 17.0 on aarch64-unknown-linux-android, compiled by Android (12470979, +pgo, +bolt, +lto, +mlgo, based on r522817c) clang version 18.0.3 (https://android.googlesource.com/toolchain/llvm-project d8003a456d14a3deb8054cdaa529ffbf02d9b262), 64-bit
+2025-03-13 17:42:19.640 MSK [31931] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-03-13 17:42:19.640 MSK [31931] LOG:  listening on Unix socket "/data/data/com.termux/files/usr/tmp/.s.PGSQL.5432"
+2025-03-13 17:42:19.644 MSK [31937] LOG:  database system was shut down at 2025-03-13 17:42:08 MSK
+2025-03-13 17:42:19.648 MSK [31931] LOG:  database system is ready to accept connections
+2025-03-13 17:49:47.393 MSK [31935] LOG:  checkpoint starting: time
+2025-03-13 17:51:25.629 MSK [31935] LOG:  checkpoint complete: wrote 977 buffers (6.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=98.163 s, sync=0.020 s, total=98.236 s; sync files=310, longest=0.002 s, average=0.001 s; distance=4535 kB, estimate=4535 kB; lsn=0/195A630, redo lsn=0/195A5A0
+2025-03-13 19:31:10.268 MSK [31935] LOG:  checkpoint starting: time
+2025-03-13 19:31:15.378 MSK [31935] LOG:  checkpoint complete: wrote 51 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.083 s, sync=0.008 s, total=5.110 s; sync files=41, longest=0.002 s, average=0.001 s; distance=161 kB, estimate=4098 kB; lsn=0/1982A00, redo lsn=0/19829A8
+2025-03-13 20:00:35.956 MSK [16505] FATAL:  role "database.sql" does not exist
+2025-03-13 20:01:07.015 MSK [16512] FATAL:  role "flaskdb" does not exist
