@@ -10,9 +10,14 @@ from flask import (
 )
 from hashlib import sha256
 import os
+import secrets
+
+secret = secrets.token_urlsafe(32)
+
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.secret_key = secret
+#app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
 users = [
@@ -47,16 +52,19 @@ debug = app.logger.debug
 @app.route('/session/new', methods=['POST'])
 def session_new():
     info('start session_new')
-    #debug('session %s', session.get('user'))
+    #debug('session %s', session['user'])
     user = get_user(request.form, users)
     if user is None:
+        info('user is None: %s', user)
+        flash('Wrong password or namerepo.destroy(id)')
         return redirect(url_for('index'))
     session['user'] = user
-    debug('session: %s', session.get['user'])
+    debug('session: %s', session['user'])
     return redirect(url_for('index'))
 
 @app.route('/session/delete', methods=['POST', 'DELETE'])
 def session_delete():
     info("start session_delete")
+    session.pop('user')
     return redirect(url_for('index'))
 # END
