@@ -1,49 +1,54 @@
 import psycopg2
 from psycopg2.extras import DictCursor
 
-class CarRepository:
+class UserRepository:
     def __init__(self, conn):
         self.conn = conn
 
     def get_content(self):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
-            cur.execute("SELECT * FROM cars")
+            cur.execute("SELECT * FROM users;")
             return [dict(row) for row in cur]
 
     def find(self, id):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
-            cur.execute("SELECT * FROM cars WHERE id = %s", (id,))
+            cur.execute("SELECT * FROM users WHERE id = %s;", (id,))
             row = cur.fetchone()
             return dict(row) if row else None
 
     def get_by_term(self, search_term=''):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute("""
-                    SELECT * FROM cars
-                    WHERE manufacturer ILIKE %s OR model ILIKE %s
+                    SELECT * FROM users
+                    WHERE nickname ILIKE %s OR email ILIKE %s;
                 """, (f'%{search_term}%', f'%{search_term}%'))
             return cur.fetchall()
 
-    def save(self, car):
-        if 'id' in car and car['id']:
-            self._update(car)
+    def save(self, user):
+        if 'id' in user and user['id']:
+            self._update(user)
         else:
-            self._create(car)
+            self._create(user)
 
-    def _update(self, car):
+    def _update(self, user):
         with self.conn.cursor() as cur:
             cur.execute(
-                "UPDATE cars SET manufacturer = %s, model = %s WHERE id = %s",
-                (car['manufacturer'], car['model'], car['id'])
+                "UPDATE users SET nickname = %s, email = %s WHERE id = %s;",
+                (user['nickname'], user['email'], user['id'])
             )
         self.conn.commit()
 
-    def _create(self, car):
+    def _create(self, user):
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO cars (manufacturer, model) VALUES (%s, %s) RETURNING id",
-                (car['manufacturer'], car['model'])
+                "INSERT INTO users (nickname, email) VALUES (%s, %s) RETURNING id;",
+                (user['nickname'], user['email'])
             )
             id = cur.fetchone()[0]
-            car['id'] = id
+            user['id'] = id
+        self.conn.commit()
+
+    def delete(self, id):
+        with self.conn.cursor(cursor_factory=DictCursor) as cur:
+            cur.execute("DELETE FROM users WHERE id = %s;", (id,))
         self.conn.commit()

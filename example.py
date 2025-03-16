@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, get_flashed_messages, url_for, session
-
+from .flask_repository import UserRepository
 import psycopg2
 import json
 import uuid
@@ -10,20 +10,23 @@ app = Flask(__name__)
 app.secret_key = secret
 app.logger.setLevel('DEBUG')
 app.secret_key = secret
-"""
+
 try:
     # пытаемся подключиться к базе данных
-    conn = psycopg2.connect(dbname='', user='u0_a441',  host='lockalhost')
+    conn = psycopg2.connect(dbname='flaskdb', user='ivan', password='', host='')
 except:
     # в случае сбоя подключения будет выведено сообщение в STDOUT
     print('Can`t establish connection to database')
 """
 try:
     # пытаемся подключиться к базе данных
-    conn = psycopg2.connect('postgresql://u0_a441@localhost/flaskdb')
+    #conn = psycopg2.connect('postgresql://u0_a441@localhost/flaskdb')
+    conn = psycopg2.connect("postgresql://ivan@localhost/flaskdb")
 except:
     # в случае сбоя подключения будет выведено сообщение  в STDOUT
     print('Can`t establish connection to database')
+"""
+repo = UserRepository(conn)
 
 @app.route('/')
 def index():
@@ -34,15 +37,12 @@ def index():
 @app.get('/users/')
 def users_index():
     app.logger.info('start users_index')
-    users = session.get('users')
-    if users is None:
-        session['users'] = []
-        users = {'nickname': '', 'email': ''}
     query = request.args.get('query', '')
     if query:
         app.logger.info('query = True')
-        filter_users = [user for user in users if query.lower() in user['nickname'].lower()]
-        users = filter_users
+        users = repo.get_by_term(query)
+    else:
+        users = repo.get_content()
     messages = get_flashed_messages(with_categories=True)
     app.logger.info('render_template users/index.html')
     return render_template('users/index.html',
@@ -50,20 +50,16 @@ def users_index():
                             query=query,
                             messages=messages)
 
-@app.route('/users/<id>')
+@app.route('/users/<int:id>')
 def users_show(id):
     app.logger.info('start users_show - users/<id>')
-    users = session.get('users')
-    if users is None:
-        session['users'] = []
-        users = {'nickname': '', 'email': ''}
-    user = list(user for user in users if user['id'] == id)
+    user = repo.find(id)
     if not user:
         app.logger.debug('user not found')
         return 'Page not found', 404
     app.logger.debug('render template users/show.html')
     return render_template('users/show.html',
-    user=user[0])
+    user=user)
 
 @app.post('/users/')
 def users_post():
@@ -76,16 +72,13 @@ def users_post():
                                user=user_data,
                                errors=errors
                                )
-    id = str(uuid.uuid4())
+    #id = str(uuid.uuid4())
     user = {
-        'id': id,
+        #'id': id,
         'nickname':user_data['nickname'],
         'email': user_data['email']
     }
-    res = session.get('users')
-    if res is None:
-        session['users'] = []
-    session['users'].append(user)
+    repo.save(user)
     flash('User was added successfully', 'success')
     app.logger.debug('user was added - success')
     return redirect(url_for('users_index'), code=302)
@@ -101,53 +94,37 @@ def users_new():
     return render_template('users/new.html',
     user=user, errors=errors)
 
-@app.route('/users/<id>/edit')
+@app.route('/users/<int:id>/edit')
 def users_edit(id):
     app.logger.info('start edit user render template')
     app.logger.debug(users_edit, id)
-    users = session.get('users')
-    if users is None:
-        session['users'] = []
-        users = {'nickname': '', 'email': ''}
-    user = [user for user in users if user["id"] == id][0]
-    errors = {}
+    user = repo.find(id)
     app.logger.debug('render template users/edit.html')
-    return render_template("users/edit.html", user=user, errors=errors)
+    return render_template("users/edit.html", user=user, errors={})
 
-@app.route("/users/<id>/patch", methods=["POST"])
+@app.route("/users/<int:id>/patch", methods=["POST"])
 def users_patch(id):
     app.logger.info('start patching user')
     data = request.form.to_dict()
-    users = session.get('users')
-    if users is None:
-        session['users'] = []
-        users = {'nickname': '', 'email': ''}
-    user = [user for user in users if user["id"] == id][0]
+    user = repo.find(id)
     errors = validate(data)
     if errors:
         app.logger.debug('errors have been found')
         data['id'] = user['id']
         return render_template("users/edit.html", user=data, errors=errors), 422
     app.logger.debug('no errors')
-    users.remove(user)
     user["nickname"] = data["nickname"]
     user["email"] = data["email"]
-    users.append(user)
-    with open("data.json", "w") as f:
-        json.dump(users, f)
+    repo.save(user)
     flash("User has been updated", 'success')
     app.logger.debug('redirect for render all users')
     return redirect(url_for('users_index'))
     
-@app.post('/users/<id>/delete')
+@app.post('/users/<int:id>/delete')
 def users_delete(id):
     app.logger.info('start users delit')
-    users = session.get('users')
-    if users is None:
-        session['users'] = []
-        users = {'nickname': '', 'email': ''}
-    user = list(user for user in users if user['id'] == id)[0]
-    users.remove(user)
+    user = repo.find(id)
+    repo.delete(user['id'])
     app.logger.debug('user: %s', user)
     flash('Пользователь удален', 'success')
     return redirect(url_for('users_index'), code=302)
