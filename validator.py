@@ -1,7 +1,7 @@
-def validate(post):
+def validate(product_data):
     errors = {}
-    if not post.get('title'):
+    if not product_data.get('title'):
         errors['title'] = "Can't be blank"
-    if not post.get('body'):
-        errors['body'] = "Can't be blank"
+    if int(product_data.get('price')) < 0:
+        errors['price'] = "Can't be negative"
     return errors

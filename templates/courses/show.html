@@ -4,12 +4,9 @@
     <title>Example application</title>
   </head>
   <body>
-  <a href="/posts">Posts</a>
-<!-- BEGIN (write your solution here) -->
-<body>
-      <h1>{{ post.title }}</h1>
-      <div>{{ post.body }}</div>
-    </body>
-<!-- END -->
+    <a href="{{ url_for('products') }}">Products</a>
+<div>
+    <h1>Title: {{ product.title }} - Price: {{ product.price }}</h1>
+</div>
   </body>
 </html>

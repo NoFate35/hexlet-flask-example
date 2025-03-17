@@ -1,32 +1,34 @@
-import json
-import sys
-import uuid
-from flask import session
+import psycopg
+from psycopg.rows import dict_row
 
 
-class PostsRepository():
-    def __init__(self):
-        if 'posts' not in session:
-            session['posts'] = {}
+def get_db(app):
+    return psycopg.connect(app.config['DATABASE_URL'])
 
-    def content(self):
-        return session['posts'].values()
+
+class ProductsRepository:
+    def __init__(self, conn):
+        self.conn = conn
+
+    def get_entities(self):
+        with self.conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("SELECT * FROM products")
+            return [dict(row) for row in cur]
 
     def find(self, id):
-        try:
-            return session['posts'][id]
-        except KeyError:
-            sys.stderr.write(f'Wrong post id: {id}')
-            raise
+        with self.conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("SELECT * FROM products WHERE id = %s", (id,))
+            row = cur.fetchone()
+            return dict(row) if row else None
 
-    def destroy(self, id):
-        del session['posts'][id]
-
-    def save(self, post):
-        if not (post.get('title') and post.get('body')):
-            raise Exception(f'Wrong data: {json.loads(post)}')
-        if not post.get('id'):
-            post['id'] = str(uuid.uuid4())
-        session['posts'][post['id']] = post
-        session['posts'] = session['posts']
-        return post['id']
+    def save(self, product):
+        if 'id' not in product or not product['id']:
+            with self.conn.cursor() as cur:
+                cur.execute(
+                    """INSERT INTO products (title, price) VALUES
+                    (%s, %s) RETURNING id""",
+                    (product['title'], product['price'])
+                )
+                id = cur.fetchone()[0]
+                product['id'] = id
+            self.conn.commit()
