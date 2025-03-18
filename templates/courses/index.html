@@ -6,7 +6,26 @@
   <body>
     <a href="{{ url_for('new_product') }}">Add product</a>
     <!-- BEGIN (write your solution here) -->
-    
+    {% if messages %}
+  <ul class=flashes>
+  {% for category, message in messages %}
+    <li class="{{ category }}">{{ message }}</li>
+  {% endfor %}
+  </ul>
+{% endif %}
+
+    <table>
+           {% for product in products %}
+                <tr>
+                    <td>
+                    {{product.title}}
+                    </td>
+                    <td>
+                    {{product.price}}
+                    </td>
+                </tr>
+                {% endfor %}
+    </table>
     <!-- END -->
 </body>
 </html>

@@ -24,11 +24,7 @@ class ProductsRepository:
     def save(self, product):
         if 'id' not in product or not product['id']:
             with self.conn.cursor() as cur:
-                cur.execute(
-                    """INSERT INTO products (title, price) VALUES
-                    (%s, %s) RETURNING id""",
-                    (product['title'], product['price'])
-                )
+                cur.execute("INSERT INTO products (title, price) VALUES (%s, %s) RETURNING id", (product['title'], product['price']))
                 id = cur.fetchone()[0]
                 product['id'] = id
             self.conn.commit()
