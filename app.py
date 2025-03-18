@@ -44,7 +44,7 @@ def products():
 def products_find(id):
     product = repo.find(int(id))
     print("produuuct", isinstance(product, dict))
-    return render_template('courses/index.html', products=dict(product), messages={})
+    return render_template('courses/index.html', products=[product], messages={})
     
 @app.route('/products/new')
 def new_product():

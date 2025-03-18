@@ -18,10 +18,10 @@
            {% for product in products %}
                 <tr>
                     <td>
-                    {{product.title}}
+                    {{product['title']}}
                     </td>
                     <td>
-                    {{product.price}}
+                    {{product['price']}}
                     </td>
                 </tr>
                 {% endfor %}
