@@ -1,5 +1,5 @@
 [project]
-name = "hexlet-flask-example"
+name = "yyy"
 version = "0.1.0"
 description = ""
 authors = [
@@ -11,8 +11,7 @@ dependencies = [
 ]
 
 [tool.poetry]
-packages = [{ include = "hexlet-flask-example", from = "." }]
-
+version = "1.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
