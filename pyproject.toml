@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "yyy"
+name = "hexlet-flask-example"
 version = "0.1.0"
 description = ""
 authors = ["NoFate35 <vsokol35@mail.ru>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.11.10"
 
 
 [build-system]
