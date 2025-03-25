@@ -1,18 +1,14 @@
-[project]
+[tool.poetry]
 name = "yyy"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "NoFate35",email = "vsokol35@mail.ru"}
-]
+authors = ["NoFate35 <vsokol35@mail.ru>"]
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-]
 
-[tool.poetry]
-version = "1.0"
+[tool.poetry.dependencies]
+python = "^3.12"
+
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
