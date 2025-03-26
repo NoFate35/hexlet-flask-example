@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Products</title>
+  </head>
+  <body>
+    <h2>Products</h2>
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert">{{ message }}</div>
+    {% endfor %}
+
+    {% for product_id, product_value in products.items() %}
+      <div>
+        {{ product_value.name }} - ${{ product_value.price }}
+        <form method="POST" action="/cart/add/{{ product_id }}">
+          <button type="submit">Add to cart</button>
+        </form>
+      </div>
+    {% endfor %}
+    <a href="/cart">View cart</a>
+  </body>
+</html>

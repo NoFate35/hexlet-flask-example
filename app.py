@@ -24,40 +24,31 @@ app.secret_key = secret
 
 #conn = psycopg.connect('postgresql://u0_a441:@localhost/flaskdb')
     
-repo = ProductsRepository(get_db(app))
+#repo = ProductsRepository(get_db(app))
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+PROMOCODES = {"SALE10": 10, "SALE20": 20, "SALE30": 30}
+PRODUCTS = {
+    "1": {"name": "apple", "price": 50},
+    "2": {"name": "orange", "price": 45},
+    "3": {"name": "banana", "price": 30},
+}
 
 
-@app.route('/products')
-def products():
-    products = repo.get_entities()
-    messages = get_flashed_messages(with_categories=True)
-    return render_template('courses/index.html', products=products, messages=messages)
+@app.route("/")
+def product_list():
+    return render_template("products.html", products=PRODUCTS)
+
+
+@app.route("/cart/add/<product_id>", methods=["POST"])
+def add_to_cart(product_id):
+    cart = session.get("cart", {})
+    cart[product_id] = cart.get(product_id, 0) + 1
+    session["cart"] = cart
+    flash("Товар добавлен в корзину", "info")
+    return redirect("/")
 
 
 # BEGIN (write your solution here)
-@app.route('/products/<id>')
-def products_find(id):
-    product = repo.find(int(id))
-    print("produuuct", isinstance(product, dict))
-    return render_template('courses/index.html', products=[product], messages={})
-    
-@app.route('/products/new')
-def new_product():
-    return render_template('courses/new.html', errors={}, product={})
-    
-@app.route('/products', methods=['POST'])
-def products_add():
-    product = request.form.to_dict()
-    errors = validate(product)
-    if errors:
-        return render_template('courses/new.html', errors=errors, product=product), 422
-    repo.save(product)
-    flash('Sucssess, product was added')
-    print('ppproduct', product)
-    return redirect(url_for('products'))
+
 # END
