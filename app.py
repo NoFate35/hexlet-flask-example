@@ -37,7 +37,7 @@ PRODUCTS = {
 
 @app.route("/")
 def product_list():
-    return render_template("products.html", products=PRODUCTS)
+    return render_template("courses/products.html", products=PRODUCTS)
 
 
 @app.route("/cart/add/<product_id>", methods=["POST"])
@@ -50,5 +50,7 @@ def add_to_cart(product_id):
 
 
 # BEGIN (write your solution here)
-
+@app.route('/cart')
+def cart_list():
+    
 # END
