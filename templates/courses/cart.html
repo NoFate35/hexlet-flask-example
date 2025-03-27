@@ -6,7 +6,10 @@
   <body>
     <h2>Ваша корзина</h2>
     <!-- BEGIN (write your solution here) -->
-    
+    {% for product in products %}
+    <li>{{ product.name }} - {{ product.quantity }}</li>
+    {% endfor %}
+    <p>Total price: {{ total_price }}</p>
     <!-- END-->
   </body>
 </html>

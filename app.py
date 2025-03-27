@@ -1,12 +1,4 @@
-from flask import (
-    Flask,
-    flash,
-    get_flashed_messages,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import Flask, flash, redirect, render_template, request, session
 import os
 import psycopg
 import secrets
@@ -19,7 +11,7 @@ from validator import validate
 
 app = Flask(__name__)
 app.config['DATABASE_URL'] = os.getenv('DATABASE_URL')
-print('app.config:', app.config['DATABASE_URL'])
+#print('app.config:', app.config['DATABASE_URL'])
 app.secret_key = secret
 
 #conn = psycopg.connect('postgresql://u0_a441:@localhost/flaskdb')
@@ -50,7 +42,28 @@ def add_to_cart(product_id):
 
 
 # BEGIN (write your solution here)
+debug = app.logger.debug
+
 @app.route('/cart')
 def cart_list():
+    total_price = 0
+    cart = session.get("cart", {})
+    filtered_products = []
+    for key, value in cart.items():
+        filtered_products.append({'name': PRODUCTS[key]['name'], 'quantity': value})
+        total_price += PRODUCTS[key]['price'] * value
+        #debug('currta %s, %s', filtered_products, total_price)
+    return render_template('courses/cart.html', products=filtered_products, total_price=total_price)
     
+    
+    return render_template('courses/cart.html')
+"""
+def filter_products(cart):
+    filtered_products = {}
+    for x in cart.keys():
+        if x in PRODUCTS.keys():
+            debug('cart fff %s', PRODUCTS[x])
+        #if x in PRODUCTS.keys():
+            #filter_pr
+   """     
 # END
