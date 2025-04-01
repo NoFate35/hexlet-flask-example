@@ -1,4 +1,8 @@
 from app import app
+from urllib.parse import urljoin
+import requests
+from flask import session
+
 
 
 def test_cart():
@@ -29,7 +33,6 @@ def test_valid_promocode():
             "/cart/promocode", data={"code": "SALE20"}, follow_redirects=True
         )
         assert "104" in promo_price.text
-
 
 def test_invalid_promocode():
     with app.test_client() as client:

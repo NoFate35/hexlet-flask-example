@@ -46,24 +46,26 @@ debug = app.logger.debug
 
 @app.route('/cart')
 def cart_list():
-    total_price = 0
     cart = session.get("cart", {})
+    filtered_products, total_price = filter_products(cart)
+    return render_template('courses/cart.html', products=filtered_products, total_price=total_price)
+
+
+@app.route('/cart/promocode', methods=['POST'])
+def add_promocode():
+    data = request.form.to_dict()
+    cart = session.get("cart", {})
+    filtered_products, total_price = filter_products(cart)
+    if data['code'] in PROMOCODES:
+        total_price -= ((total_price / 100) * PROMOCODES[data['code']])
+        flash("Скидка применена", "info")
+    return render_template('courses/cart.html',products=filtered_products, total_price=total_price)
+
+def filter_products(cart):
     filtered_products = []
+    total_price = 0
     for key, value in cart.items():
         filtered_products.append({'name': PRODUCTS[key]['name'], 'quantity': value})
         total_price += PRODUCTS[key]['price'] * value
-        #debug('currta %s, %s', filtered_products, total_price)
-    return render_template('courses/cart.html', products=filtered_products, total_price=total_price)
-    
-    
-    return render_template('courses/cart.html')
-"""
-def filter_products(cart):
-    filtered_products = {}
-    for x in cart.keys():
-        if x in PRODUCTS.keys():
-            debug('cart fff %s', PRODUCTS[x])
-        #if x in PRODUCTS.keys():
-            #filter_pr
-   """     
+    return (filtered_products, total_price)
 # END
