@@ -1,39 +1,11 @@
 <!doctype html>
 <html>
   <head>
-    <title>Example application</title>
+    <title>Посты</title>
   </head>
   <body>
-    <a href="{{ url_for('new_product') }}">Add product</a>
-    <!-- BEGIN (write your solution here) -->
-    {% if messages %}
-  <ul class=flashes>
-  {% for category, message in messages %}
-    <li class="{{ category }}">{{ message }}</li>
-  {% endfor %}
-  </ul>
-{% endif %}
-
-    <table>
-    <thead>
-        <tr>
-          <th>Title</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody>
-           {% for product in products %}
-                <tr>
-                    <td>
-                    {{product['title']}}
-                    </td>
-                    <td>
-                    {{product['price']}}
-                    </td>
-                </tr>
-                {% endfor %}
-           </tbody>
-    </table>
-    <!-- END -->
+    <!--BEGIN (write your solution here)-->
+    
+    <!--END-->
 </body>
 </html>

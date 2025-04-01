@@ -1,49 +1,56 @@
-from app import app
+import re
 from urllib.parse import urljoin
+
 import requests
-from flask import session
+from repository import word_list
+
+BASE_URL = "http://localhost:8000"
 
 
-
-def test_cart():
-    with app.test_client() as client:
-        client.post("/cart/add/1")
-        client.post("/cart/add/1")
-        client.post("/cart/add/3")
-
-        cart_response = client.get("/cart")
-        assert cart_response.status_code == 200
-        assert "apple" in cart_response.text
-        assert "banana" in cart_response.text
-        assert (
-            "130" in cart_response.text
-        )  # Price for 2 apples (50 * 2) + one banana (30)
-
-
-def test_valid_promocode():
-    with app.test_client() as client:
-        client.post("/cart/add/1")
-        client.post("/cart/add/1")
-        client.post("/cart/add/3")
-
-        base_price = client.get("/cart")
-        assert "130" in base_price.text
-
-        promo_price = client.post(
-            "/cart/promocode", data={"code": "SALE20"}, follow_redirects=True
+def test_search_post():
+    with requests.Session() as s:
+        response = s.get(
+            urljoin(BASE_URL, "/posts"),
+            allow_redirects=True,
         )
-        assert "104" in promo_price.text
+        assert response.status_code == 200
+        posts_count = response.text.count("<li>")
+        assert posts_count == 20
 
-def test_invalid_promocode():
-    with app.test_client() as client:
-        client.post("/cart/add/1")
-        client.post("/cart/add/1")
-        client.post("/cart/add/3")
-
-        base_price = client.get("/cart")
-        assert "130" in base_price.text
-
-        promo_price = client.post(
-            "/cart/promocode", data={"code": "WRONG"}, follow_redirects=True
+        word = "foobar"
+        response = s.get(
+            urljoin(BASE_URL, f"/posts?term={word}"),
+            allow_redirects=True,
         )
-        assert "130" in promo_price.text
+        assert response.status_code == 200
+        assert word in response.text
+        posts_count = response.text.count(word)
+        assert posts_count == 4
+
+        wrong_word = "wrongword"
+        response = s.get(
+            urljoin(BASE_URL, f"/posts?term={wrong_word}"),
+            allow_redirects=True,
+        )
+        assert response.status_code == 200
+        posts_count = response.text.count(wrong_word)
+        assert posts_count == 1
+
+
+def test_post_suggestions():
+    with requests.Session() as s:
+        response = s.get(
+            urljoin(BASE_URL, "/posts"),
+            allow_redirects=True,
+        )
+        post_match = re.search(
+            r'(foobar. <a href="/posts/[a-f0-9-]+)"', response.text
+        ).group(1)
+        post_url = re.search(r"/posts/[a-f0-9-]+", post_match).group(0)
+        response = s.get(
+            urljoin(BASE_URL, f"{post_url}"),
+            allow_redirects=True,
+        )
+        assert response.status_code == 200
+        posts_count = response.text.count("foobar")
+        assert posts_count == 4
