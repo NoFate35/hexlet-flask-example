@@ -47,5 +47,11 @@ def posts_route():
                 debug("query: %s, post.title: %s \n post.body: %s", query, post.title, post.content)
                 filter_posts.append(post)
                 posts = filter_posts
-    return render_template('courses/index.html', posts=posts)
+    return render_template('courses/index.html', posts=posts, query=query)
+
+
+@app.route('/posts/<uuid:post_id>')
+def posts_show(post_id):
+    post = repo.get_post(post_id)
+    return render_template('courses/view.html', post=post)
 # END
