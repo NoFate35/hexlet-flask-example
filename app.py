@@ -53,5 +53,12 @@ def posts_route():
 @app.route('/posts/<uuid:post_id>')
 def posts_show(post_id):
     post = repo.get_post(post_id)
-    return render_template('courses/view.html', post=post)
+    similar_posts = []
+    for word in post.title.split():
+        similar_posts_for_word = repo.search_posts(word)
+        for similar_post in similar_posts_for_word:
+            if similar_post not in similar_posts:
+                similar_posts.append(similar_post)
+    debug("simmmmm: %s", similar_posts)
+    return render_template('courses/view.html', post=post, similar_posts=similar_posts)
 # END
