@@ -12,7 +12,7 @@
     <ul>    
     {% for post in posts %}
     <li>
-      <p><a href="{{ url_for('posts_show', post_id=post.id) }}">{{ post.title}}</a></p>
+      <p>{{ post.title}} <a href="/posts/{{ post.id }}">{{ post.id }}</a></p>
       
     </li>
     {% endfor %}

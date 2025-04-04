@@ -10,7 +10,7 @@
     <!--BEGIN (write your solution here)-->
     {% for post in similar_posts %}
 
-    <p><a href="{{ url_for('posts_show', post_id=post.id) }}">{{ post.title}}</a></p>
+    <p>{{ post.title }}<a href="posts/{{ post.id }}"></a></p>
 
     {% endfor %}
     <!--END-->
