@@ -30,7 +30,7 @@ def initialize_data():
 @app.route("/posts")
 def list_posts():
     all_posts = repo.get_all_posts()
-    return render_template("posts/index.html", posts=all_posts)
+    return render_template("courses/index.html", posts=all_posts)
 
 
 @app.route("/posts/<uuid:post_id>")
@@ -40,7 +40,7 @@ def view_post(post_id):
         abort(404)
 
     post_comments = repo.get_comments_by_post(post_id)
-    return render_template("posts/view.html", post=post, comments=post_comments)
+    return render_template("courses/view.html", post=post, comments=post_comments)
 
 
 # BEGIN (write your solution here)
