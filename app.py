@@ -1,14 +1,13 @@
-from flask import Flask, flash, redirect, render_template, request, session
 import os
-import psycopg
 import secrets
 from dotenv import load_dotenv
+from flask import Flask, abort, flash, redirect, render_template, request, session
+from repository import Comment, CommentStatus, Repository, generate_posts
+from validator import check_spam, check_triggers
+
 secret = secrets.token_urlsafe(32)
 
-from repository import Repository, generate_posts
-
 load_dotenv()
-from validator import validate
 
 
 app = Flask(__name__)

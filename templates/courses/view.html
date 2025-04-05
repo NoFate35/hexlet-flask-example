@@ -5,14 +5,35 @@
 </head>
 <body>
     <h1>{{ post.title }}</h1>
+    <div class="meta">
+        Автор: {{ post.author_id }} | {{ post.created_at.strftime('%d.%m.%Y %H:%M') }}
+    </div>
+
     <div>{{ post.content }}</div>
 
-    <!--BEGIN (write your solution here)-->
-    {% for post in similar_posts %}
+    <h2>Комментарии</h2>
 
-    <p>{{ post.title }}<a href="posts/{{ post.id }}"></a></p>
-
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="alert">{{ message }}</div>
     {% endfor %}
-    <!--END-->
+
+    <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}">
+        <textarea name="text" rows="3" required></textarea>
+        <br>
+        <button type="submit">Добавить комментарий</button>
+    </form>
+
+    {% for comment in comments %}
+        <div class="comment">
+            <div>{{ comment.text }}</div>
+            <div class="meta">
+                Автор: {{ comment.author_id }} | {{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}
+            </div>
+        </div>
+    {% endfor %}
+
+    {% if not comments %}
+        <p>Нет комментариев</p>
+    {% endif %}
 </body>
 </html>

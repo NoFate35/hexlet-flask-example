@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+    <title>Модерация комментариев</title>
+</head>
+<body>
+    <h1>Модерация комментариев</h1>
+
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="alert">{{ message }}</div>
+    {% endfor %}
+
+    {% for comment in comments %}
+        <div class="comment">
+            <div>{{ comment.text }}</div>
+            <div class="meta">
+                К посту: <a href="{{ url_for('view_post', post_id=comment.post_id) }}">Перейти к посту</a> |
+                Автор: {{ comment.author_id }} |
+                {{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}
+            </div>
+
+            <div class="actions">
+                <form method="POST" action="{{ url_for('moderate_comment', comment_id=comment.id) }}">
+                    <button name="action" value="approve">Одобрить</button>
+                    <button name="action" value="reject">Отклонить</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% if not comments %}
+        <p>Нет комментариев на модерации</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('list_posts') }}">К постам</a></p>
+</body>
+</html>
