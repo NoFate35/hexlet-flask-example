@@ -27,38 +27,36 @@ def initialize_data():
         session["initialized"] = True
 
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+@app.route("/posts")
+def list_posts():
+    all_posts = repo.get_all_posts()
+    return render_template("posts/index.html", posts=all_posts)
+
+
+@app.route("/posts/<uuid:post_id>")
+def view_post(post_id):
+    post = repo.get_post(post_id)
+    if not post:
+        abort(404)
+
+    post_comments = repo.get_comments_by_post(post_id)
+    return render_template("posts/view.html", post=post, comments=post_comments)
 
 
 # BEGIN (write your solution here)
-debug = app.logger.debug
 
-@app.route('/posts')
-def posts_route():
-    query = request.args.get('term')
-    posts = repo.get_all_posts()
-    filter_posts = []
-    if query:
-        for post in posts:
-            if (query in post.title) or (query in post.content):
-                debug("query: %s, post.title: %s \n post.body: %s", query, post.title, post.content)
-                filter_posts.append(post)
-                posts = filter_posts
-    return render_template('courses/index.html', posts=posts, query=query)
-
-
-@app.route('/posts/<uuid:post_id>')
-def posts_show(post_id):
-    debug("ggggggggggggggggggggg")
-    post = repo.get_post(post_id)
-    similar_posts = []
-    for word in post.title.split():
-        similar_posts_for_word = repo.search_posts(word)
-        for similar_post in similar_posts_for_word:
-            if (similar_post not in similar_posts) and (similar_post != post):
-                similar_posts.append(similar_post)
-                debug("simmmmm: %s \n", similar_post)
-    return render_template('courses/view.html', post=post, similar_posts=similar_posts)
 # END
+
+
+@app.route("/moderate")
+def moderate_comments():
+    waiting_comments = repo.get_waiting_comments()
+
+    comments_with_context = []
+    for comment in waiting_comments:
+        post = repo.get_post(comment.post_id)
+        if post:
+            context = {"post_title": post.title, "comment": comment}
+            comments_with_context.append(context)
+
+    return render_template("comments/moderate.html", comments=waiting_comments)
