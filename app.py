@@ -23,7 +23,7 @@ repo = Repository()
 @app.before_request
 def initialize_data():
     if not session.get("initialized"):
-        generate_posts(repo, 20)
+        generate_posts(repo, 4)
         session["initialized"] = True
 
 
