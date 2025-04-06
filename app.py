@@ -40,7 +40,7 @@ def view_post(post_id):
         abort(404)
 
     post_comments = repo.get_comments_by_post(post_id)
-    debug("post_comments: %s", post_comments)
+    debug("post_comments view_post: %s", post_comments)
     return render_template("courses/view.html", post=post, comments=post_comments)
 
 
@@ -62,7 +62,8 @@ def add_comment(post_id):
         status = status
         )
         repo.save_comment(comment)
-        debug("comment: %s", comment)
+        post_comments = repo.get_comments_by_post(post_id)
+        debug("post comments add_comments: %s", post_comments)
     return redirect(url_for('view_post', post_id=post_id))
 # END
 
