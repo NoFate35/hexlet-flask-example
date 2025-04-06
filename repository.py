@@ -109,6 +109,7 @@ class Repository:
         self._init_storage()
         post_id_str = str(post_id)
         comments = []
+        print("session comments:", session["comments"])
         for comment_dict in session["comments"]:
             if comment_dict["post_id"] == post_id_str:
                 comment = Comment(

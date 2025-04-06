@@ -52,14 +52,14 @@ def add_comment(post_id):
     spam = check_spam(text_comment["text"])
     if not spam:
         trigger = check_triggers(text_comment["text"])
-        status = CommentStatus.APPROVED
+        comment_status = CommentStatus.APPROVED
         if trigger:
-            status = CommentStatus.WAITING
+            comment_status = CommentStatus.WAITING
             print('truuuu')
         comment = Comment(
         post_id = post_id,
         text = text_comment["text"],
-        status = status
+        status = comment_status
         )
         repo.save_comment(comment)
         post_comments = repo.get_comments_by_post(post_id)
