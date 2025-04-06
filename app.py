@@ -1,7 +1,7 @@
 import os
 import secrets
 from dotenv import load_dotenv
-from flask import Flask, abort, flash, redirect, render_template, request, session
+from flask import Flask, abort, flash, redirect, render_template, request, session, url_for
 from repository import Comment, CommentStatus, Repository, generate_posts
 from validator import check_spam, check_triggers
 
@@ -40,11 +40,30 @@ def view_post(post_id):
         abort(404)
 
     post_comments = repo.get_comments_by_post(post_id)
+    debug("post_comments: %s", post_comments)
     return render_template("courses/view.html", post=post, comments=post_comments)
 
 
 # BEGIN (write your solution here)
-
+debug = app.logger.debug
+@app.route('/posts/<uuid:post_id>/comments', methods=['POST'])
+def add_comment(post_id):
+    text_comment = request.form.to_dict()
+    spam = check_spam(text_comment["text"])
+    if not spam:
+        trigger = check_triggers(text_comment["text"])
+        status = CommentStatus.APPROVED
+        if trigger:
+            status = CommentStatus.WAITING
+            print('truuuu')
+        comment = Comment(
+        post_id = post_id,
+        text = text_comment["text"],
+        status = status
+        )
+        repo.save_comment(comment)
+        debug("comment: %s", comment)
+    return redirect(url_for('view_post', post_id=post_id))
 # END
 
 

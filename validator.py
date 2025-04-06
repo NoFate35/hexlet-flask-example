@@ -11,6 +11,7 @@ TRIGGER_WORDS = ["http", "https"]
 
 
 def check_spam(text):
+    print("textgggggg:", text )
     text = text.lower()
     return any(word in text for word in SPAM_WORDS)
 
