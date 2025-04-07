@@ -9,6 +9,7 @@ from flask import session
 SEED = 1234
 
 
+
 class CommentStatus(Enum):
     WAITING = "waiting"
     APPROVED = "approved"
@@ -88,6 +89,7 @@ class Repository:
 
     def save_comment(self, comment):
         self._init_storage()
+        session.modified = True
         comment_dict = asdict(comment)
         comment_dict["id"] = str(comment.id)
         comment_dict["post_id"] = str(comment.post_id)
@@ -109,7 +111,7 @@ class Repository:
         self._init_storage()
         post_id_str = str(post_id)
         comments = []
-        print("session comments:", session["comments"])
+        #print("session comments:", session["comments"])
         for comment_dict in session["comments"]:
             if comment_dict["post_id"] == post_id_str:
                 comment = Comment(
