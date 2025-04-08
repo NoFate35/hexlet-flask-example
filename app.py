@@ -74,7 +74,8 @@ def moderate_comment(comment_id):
         comment.status = CommentStatus.APPROVED
     else:
         comment.status = CommentStatus.REJECTED
-        debug("comment: %s", comment)
+    repo.save_comment(comment)
+    debug("comment: %s", comment)
     return redirect(url_for('moderate_comments'))
 # END
 
