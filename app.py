@@ -71,13 +71,10 @@ def moderate_comment(comment_id):
     comment = repo.get_comment(comment_id)
     action = request.form.to_dict()
     if action['action'] == 'approve':
-        comment = Comment(
-                            post_id = comment.post_id,
-                            text = comment.text,
-                            status = CommentStatus.APPROVED
-        )
-        repo.save_comment(comment)     
-    debug("comment: %s, action: %s", comment, action)
+        comment.status = CommentStatus.APPROVED
+    else:
+        comment.status = CommentStatus.REJECTED
+        debug("comment: %s", comment)
     return redirect(url_for('moderate_comments'))
 # END
 
