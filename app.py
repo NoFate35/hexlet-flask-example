@@ -54,26 +54,34 @@ def add_comment(post_id):
     if not spam:
         trigger = check_triggers(text_comment["text"])
         comment_status = CommentStatus.APPROVED
-        if trigger:
-            comment_status = CommentStatus.WAITING
-            #print('truuuu')
         comment = Comment(
         post_id = post_id,
         text = text_comment["text"],
-        status = comment_status
+        status = CommentStatus.WAITING if trigger else CommentStatus.APPROVED
         )
+        if trigger:
+            flash("Ваш комментарий отправлен на проверку", "info")
+        else:
+            flash("Комментарий успешно добавлен", "success")
+
         repo.save_comment(comment)
-    return redirect(url_for('view_post', post_id=post_id))
+        return redirect(url_for('view_post', post_id=post_id))
+    flash("Комментарий содержит спам", "error")
+    return redirect(f"/posts/{post_id}")
 
 
 @app.route("/moderate/<uuid:comment_id>", methods=['POST'])
 def moderate_comment(comment_id):
     comment = repo.get_comment(comment_id)
+    if not comment:
+        abort(404)
     action = request.form.to_dict()
     if action['action'] == 'approve':
         comment.status = CommentStatus.APPROVED
+        flash("Комментарий одобрен", "success")
     else:
         comment.status = CommentStatus.REJECTED
+        flash("Комментарий отклонен", "warning")
     repo.save_comment(comment)
     debug("comment: %s", comment)
     return redirect(url_for('moderate_comments'))
